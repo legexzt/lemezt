@@ -50,6 +50,10 @@ class HomeFragment : Fragment() {
         setupInputActions()
         setupActiveDownloadsSummary()
 
+        binding.btnOpenDrawer.setOnClickListener {
+            (activity as? com.lemezt.app.ui.MainActivity)?.openDrawer()
+        }
+
         binding.fabMultiCollector.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(requireContext())) {
                 Toast.makeText(requireContext(), "Overlay permission needed for Floating Collector. Opening Settings...", Toast.LENGTH_LONG).show()
