@@ -12,6 +12,107 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="80dp" />
 
+    <!-- Dynamic Island Floating Mini-Player Pill -->
+    <LinearLayout
+        android:id="@+id/dynamicIslandContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="88dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:elevation="16dp">
+
+        <LinearLayout
+            android:id="@+id/dynamicIslandPill"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_dynamic_island"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <!-- Rotating Vinyl Micro Artwork -->
+            <ImageView
+                android:id="@+id/ivIslandArtwork"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_vinyl_disc"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_download" />
+
+            <!-- Song Info -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvIslandTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:text="Song Title"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvIslandArtist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Artist"
+                    android:textColor="#99A0B0"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <!-- Rewind 10s -->
+            <ImageButton
+                android:id="@+id/btnIslandRewind"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Rewind 10s"
+                android:src="@drawable/ic_replay_10"
+                app:tint="#FFFFFF" />
+
+            <!-- Play / Pause -->
+            <ImageButton
+                android:id="@+id/btnIslandPlayPause"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="2dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Play/Pause"
+                android:src="@drawable/ic_play"
+                app:tint="#00E5FF" />
+
+            <!-- Close mini player -->
+            <ImageButton
+                android:id="@+id/btnIslandClose"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="2dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Close"
+                android:src="@drawable/ic_close"
+                app:tint="#778899" />
+        </LinearLayout>
+    </LinearLayout>
+
     <!-- Material 3 Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"

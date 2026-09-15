@@ -1,44 +1,52 @@
 package com.lemezt.app.feature.player
 
-import android.media.MediaPlayer
-import android.net.Uri
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lemezt.app.R
+import com.lemezt.app.core.datastore.UserPreferencesDataStore
 import com.lemezt.app.core.util.ImageLoader
 import com.lemezt.app.databinding.BottomSheetAudioPlayerBinding
-import java.io.File
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class AudioPlayerBottomSheet : BottomSheetDialogFragment() {
 
     private var _binding: BottomSheetAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
-    private var mediaPlayer: MediaPlayer? = null
-    private val handler = Handler(Looper.getMainLooper())
+    private var vinylAnimator: ObjectAnimator? = null
+    private lateinit var dataStore: UserPreferencesDataStore
 
-    private var uriString: String = ""
-    private var songTitle: String = ""
-    private var artist: String = ""
-    private var artworkUrl: String? = null
+    private var inputUri: String = ""
+    private var inputTitle: String = ""
+    private var inputArtist: String = ""
+    private var inputArtwork: String? = null
 
     companion object {
         fun newInstance(uri: String, title: String, artist: String, artwork: String?): AudioPlayerBottomSheet {
             val sheet = AudioPlayerBottomSheet()
-            sheet.uriString = uri
-            sheet.songTitle = title
-            sheet.artist = artist
+            sheet.inputUri = uri
+            sheet.inputTitle = title
+            sheet.inputArtist = artist
             sheet.artworkUrl = artwork
             return sheet
         }
+
+        fun showExisting(): AudioPlayerBottomSheet {
+            return AudioPlayerBottomSheet()
+        }
     }
+
+    private var artworkUrl: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = BottomSheetAudioPlayerBinding.inflate(inflater, container, false)
@@ -47,95 +55,153 @@ class AudioPlayerBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        dataStore = UserPreferencesDataStore(requireContext())
 
-        binding.tvAudioTitle.text = songTitle
-        binding.tvAudioArtist.text = artist
+        setupVinylAnimation()
 
-        if (!artworkUrl.isNullOrEmpty()) {
-            ImageLoader.load(artworkUrl, binding.ivAudioArtwork, cornerRadiusDp = 16f)
+        // If a new track was passed, start playing it via background service
+        if (inputUri.isNotBlank()) {
+            val track = AudioTrack(inputUri, inputTitle, inputArtist, artworkUrl)
+            AudioPlayerService.playTrack(requireContext(), track)
         }
 
-        setupAudio()
+        observeServiceState()
         setupControls()
     }
 
-    private fun setupAudio() {
-        try {
-            val uri = if (uriString.startsWith("content://")) {
-                Uri.parse(uriString)
-            } else {
-                Uri.fromFile(File(uriString))
-            }
+    private fun setupVinylAnimation() {
+        vinylAnimator = ObjectAnimator.ofFloat(binding.ivAudioArtwork, View.ROTATION, 0f, 360f).apply {
+            duration = 10000
+            repeatCount = ValueAnimator.INFINITE
+            interpolator = LinearInterpolator()
+        }
+    }
 
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(requireContext(), uri)
-                prepare()
-                start()
-                binding.btnAudioPlayPause.setImageResource(R.drawable.ic_pause)
-
-                val duration = this.duration
-                binding.audioSeekBar.max = duration
-                binding.tvAudioTotalTime.text = formatTime(duration)
-
-                setOnCompletionListener {
-                    binding.btnAudioPlayPause.setImageResource(R.drawable.ic_play)
-                    binding.audioSeekBar.progress = duration
+    private fun observeServiceState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            AudioPlayerService.currentTrack.collect { track ->
+                if (track != null) {
+                    binding.tvAudioTitle.text = track.title
+                    binding.tvAudioArtist.text = track.artist
+                    if (!track.artworkUrl.isNullOrEmpty()) {
+                        ImageLoader.load(track.artworkUrl, binding.ivAudioArtwork, cornerRadiusDp = 100f)
+                    } else {
+                        binding.ivAudioArtwork.setImageResource(R.drawable.ic_download)
+                    }
+                    observeFavorite(track.uriString)
                 }
             }
+        }
 
-            handler.post(progressUpdater)
+        viewLifecycleOwner.lifecycleScope.launch {
+            AudioPlayerService.isPlaying.collect { playing ->
+                binding.btnAudioPlayPause.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
+                if (playing) {
+                    if (vinylAnimator?.isPaused == true) {
+                        vinylAnimator?.resume()
+                    } else if (vinylAnimator?.isStarted != true) {
+                        vinylAnimator?.start()
+                    }
+                } else {
+                    vinylAnimator?.pause()
+                }
+            }
+        }
 
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Cannot play audio file", Toast.LENGTH_SHORT).show()
-            dismiss()
+        viewLifecycleOwner.lifecycleScope.launch {
+            AudioPlayerService.currentPosition.collect { cur ->
+                binding.audioSeekBar.progress = cur
+                binding.tvAudioCurrentTime.text = formatTime(cur)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            AudioPlayerService.duration.collect { dur ->
+                binding.audioSeekBar.max = dur
+                binding.tvAudioTotalTime.text = formatTime(dur)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            AudioPlayerService.playbackSpeed.collect { speed ->
+                binding.btnAudioSpeed.text = String.format("%.1fx", speed)
+            }
+        }
+    }
+
+    private fun observeFavorite(uri: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val isFav = dataStore.isFavorite(uri).first()
+            updateFavoriteIcon(isFav)
+        }
+
+        binding.btnAudioFavorite.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val isNowFav = dataStore.toggleFavorite(uri)
+                updateFavoriteIcon(isNowFav)
+
+                binding.btnAudioFavorite.animate()
+                    .scaleX(1.35f)
+                    .scaleY(1.35f)
+                    .setDuration(150)
+                    .withEndAction {
+                        binding.btnAudioFavorite.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start()
+                    }
+                    .start()
+
+                val msg = if (isNowFav) "?? Added to My Favorites" else "Removed from Favorites"
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun updateFavoriteIcon(isFavorite: Boolean) {
+        if (isFavorite) {
+            binding.btnAudioFavorite.setImageResource(R.drawable.ic_favorite)
+            binding.btnAudioFavorite.setColorFilter(0xFFFF2D55.toInt())
+        } else {
+            binding.btnAudioFavorite.setImageResource(R.drawable.ic_favorite_border)
+            binding.btnAudioFavorite.clearColorFilter()
         }
     }
 
     private fun setupControls() {
         binding.btnAudioPlayPause.setOnClickListener {
-            val mp = mediaPlayer ?: return@setOnClickListener
-            if (mp.isPlaying) {
-                mp.pause()
-                binding.btnAudioPlayPause.setImageResource(R.drawable.ic_play)
-            } else {
-                mp.start()
-                binding.btnAudioPlayPause.setImageResource(R.drawable.ic_pause)
-            }
+            AudioPlayerService.toggle(requireContext())
         }
 
         binding.btnAudioRewind.setOnClickListener {
-            val mp = mediaPlayer ?: return@setOnClickListener
-            mp.seekTo((mp.currentPosition - 10000).coerceAtLeast(0))
+            AudioPlayerService.rewind10(requireContext())
         }
 
         binding.btnAudioForward.setOnClickListener {
-            val mp = mediaPlayer ?: return@setOnClickListener
-            mp.seekTo((mp.currentPosition + 10000).coerceAtMost(mp.duration))
+            AudioPlayerService.forward10(requireContext())
+        }
+
+        // Cycle through speed options: 1.0x -> 1.25x -> 1.5x -> 2.0x -> 0.75x -> 1.0x
+        binding.btnAudioSpeed.setOnClickListener {
+            val current = AudioPlayerService.playbackSpeed.value
+            val nextSpeed = when (current) {
+                1.0f -> 1.25f
+                1.25f -> 1.5f
+                1.5f -> 2.0f
+                2.0f -> 0.75f
+                else -> 1.0f
+            }
+            AudioPlayerService.setSpeed(requireContext(), nextSpeed)
+            Toast.makeText(requireContext(), "Speed: x", Toast.LENGTH_SHORT).show()
         }
 
         binding.audioSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    mediaPlayer?.seekTo(progress)
+                    AudioPlayerService.seekTo(requireContext(), progress)
                     binding.tvAudioCurrentTime.text = formatTime(progress)
                 }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-    }
-
-    private val progressUpdater = object : Runnable {
-        override fun run() {
-            mediaPlayer?.let { mp ->
-                if (mp.isPlaying) {
-                    val cur = mp.currentPosition
-                    binding.audioSeekBar.progress = cur
-                    binding.tvAudioCurrentTime.text = formatTime(cur)
-                }
-            }
-            handler.postDelayed(this, 500)
-        }
     }
 
     private fun formatTime(millis: Int): String {
@@ -147,9 +213,8 @@ class AudioPlayerBottomSheet : BottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        handler.removeCallbacks(progressUpdater)
-        mediaPlayer?.release()
-        mediaPlayer = null
+        vinylAnimator?.cancel()
+        vinylAnimator = null
         _binding = null
     }
 }

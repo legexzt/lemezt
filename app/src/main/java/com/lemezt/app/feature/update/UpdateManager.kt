@@ -45,7 +45,7 @@ object UpdateManager {
 
     // GitHub repository endpoint for zero-configuration auto updates
     private const val GITHUB_REPO = "legexzt/lemezt"
-    private const val GITHUB_API_URL = "https://api.github.com/repos//releases/latest"
+    private const val GITHUB_API_URL = "https://api.github.com/repos/legexzt/lemezt/releases/latest"
 
     private val httpClient = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
@@ -87,7 +87,7 @@ object UpdateManager {
                     }
 
                     if (!apkUrl.isNullOrBlank() && isNewerVersion(tagName, BuildConfig.VERSION_NAME)) {
-                        Log.d(TAG, "GitHub release found:  > ")
+                        Log.d(TAG, "GitHub release found: $tagName > ${BuildConfig.VERSION_NAME}")
                         return@withContext UpdateInfo(
                             hasUpdate = true,
                             latestVersionName = tagName,
@@ -99,7 +99,7 @@ object UpdateManager {
                 }
             }
         } catch (e: Exception) {
-            Log.w(TAG, "GitHub releases check skipped: ")
+            Log.w(TAG, "GitHub releases check skipped: ${e.message}")
         }
 
         // 2. Check Firebase Remote Config as secondary / enterprise channel
@@ -118,10 +118,10 @@ object UpdateManager {
             val isForce = remoteConfig.getBoolean(KEY_FORCE_UPDATE)
 
             if (latestCode > BuildConfig.VERSION_CODE.toLong() && updateUrl.isNotBlank()) {
-                Log.d(TAG, "Firebase Remote Config update found:  ()")
+                Log.d(TAG, "Firebase Remote Config update found: $latestName ($latestCode)")
                 return@withContext UpdateInfo(
                     hasUpdate = true,
-                    latestVersionName = if (latestName.isNotBlank()) latestName else "v",
+                    latestVersionName = if (latestName.isNotBlank()) latestName else "v$latestCode",
                     latestVersionCode = latestCode,
                     downloadUrl = updateUrl,
                     releaseNotes = releaseNotes,
@@ -129,7 +129,7 @@ object UpdateManager {
                 )
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Firebase Remote Config check error: ")
+            Log.w(TAG, "Firebase Remote Config check error: ${e.message}")
         }
 
         return@withContext null
@@ -152,7 +152,7 @@ object UpdateManager {
                     if (isManualCheck) {
                         Toast.makeText(
                             activity,
-                            "Lemezt is up to date (v)",
+                            "Lemezt is up to date (v${BuildConfig.VERSION_NAME})",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -169,8 +169,8 @@ object UpdateManager {
         isForce: Boolean
     ) {
         val dialog = MaterialAlertDialogBuilder(activity)
-            .setTitle("?? New Update Available!")
-            .setMessage("Version  is ready to install.\n\nWhat's New:\n")
+            .setTitle("🚀 New Update Available!")
+            .setMessage("Version $latestName is ready to install.\n\nWhat's New:\n$notes")
             .setPositiveButton("Update Now") { _, _ ->
                 startDownloadAndInstall(activity, updateUrl, latestName)
             }
@@ -186,7 +186,7 @@ object UpdateManager {
     private fun startDownloadAndInstall(activity: FragmentActivity, url: String, versionName: String) {
         val progressDialog = ProgressDialog(activity).apply {
             setTitle("Downloading Update")
-            setMessage("Downloading lemezt v...")
+            setMessage("Downloading lemezt v$versionName...")
             setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
             setCancelable(false)
             max = 100
@@ -204,7 +204,7 @@ object UpdateManager {
                 val response = httpClient.newCall(request).execute()
 
                 if (!response.isSuccessful) {
-                    throw Exception("Download failed: HTTP ")
+                    throw Exception("Download failed: HTTP ${response.code}")
                 }
 
                 val body = response.body ?: throw Exception("Empty response body")
@@ -239,7 +239,7 @@ object UpdateManager {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
                     progressDialog.dismiss()
-                    Toast.makeText(activity, "Update failed: ", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "Update failed: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -249,7 +249,7 @@ object UpdateManager {
         try {
             val apkUri = FileProvider.getUriForFile(
                 context,
-                ".provider",
+                "${context.packageName}.provider",
                 apkFile
             )
 
@@ -260,7 +260,7 @@ object UpdateManager {
             context.startActivity(intent)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(context, "Cannot launch installer: ", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Cannot launch installer: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 

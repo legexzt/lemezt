@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -22,6 +23,7 @@ class UserPreferencesDataStore(private val context: Context) {
         val KEY_DEFAULT_AUDIO_FORMAT = stringPreferencesKey("default_audio_format")   // "M4A", "MP3"
         val KEY_EMBED_COVER = booleanPreferencesKey("embed_cover")
         val KEY_SAVE_LYRICS = booleanPreferencesKey("save_lyrics")
+        val KEY_FAVORITE_URIS = stringSetPreferencesKey("favorite_uris")
     }
 
     val themeMode: Flow<String> = context.dataStore.data.map { prefs ->
@@ -74,6 +76,28 @@ class UserPreferencesDataStore(private val context: Context) {
 
     suspend fun setEmbedCover(enabled: Boolean) {
         context.dataStore.edit { prefs -> prefs[KEY_EMBED_COVER] = enabled }
+    }
+
+    val favoriteUris: Flow<Set<String>> = context.dataStore.data.map { prefs ->
+        prefs[KEY_FAVORITE_URIS] ?: emptySet()
+    }
+
+    fun isFavorite(uri: String): Flow<Boolean> = favoriteUris.map { it.contains(uri) }
+
+    suspend fun toggleFavorite(uri: String): Boolean {
+        var isNowFav = false
+        context.dataStore.edit { prefs ->
+            val current = (prefs[KEY_FAVORITE_URIS] ?: emptySet()).toMutableSet()
+            if (current.contains(uri)) {
+                current.remove(uri)
+                isNowFav = false
+            } else {
+                current.add(uri)
+                isNowFav = true
+            }
+            prefs[KEY_FAVORITE_URIS] = current
+        }
+        return isNowFav
     }
 
     suspend fun setSaveLyrics(enabled: Boolean) {
