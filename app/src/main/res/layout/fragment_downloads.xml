@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/lemeztAppBg">
+
+    <!-- Header -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:fontFamily="sans-serif-black"
+            android:text="Downloads"
+            android:textColor="?attr/lemeztTextPrimary"
+            android:textSize="22sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClearHistory"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Clear completed"
+            android:textColor="?attr/lemeztTextSecondary"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <!-- Tabs: Active vs Completed -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutDownloads"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?attr/lemeztAppBg"
+        app:tabIndicatorColor="@color/lemezt_primary"
+        app:tabSelectedTextColor="@color/lemezt_primary"
+        app:tabTextColor="?attr/lemeztTextSecondary">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Active" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Completed" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <!-- Empty Placeholder -->
+    <TextView
+        android:id="@+id/tvDownloadsEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="No downloads yet."
+        android:textColor="?attr/lemeztTextSecondary"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDownloadsList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="24dp" />
+
+</LinearLayout>

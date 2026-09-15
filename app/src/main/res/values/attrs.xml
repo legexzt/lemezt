@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="lemeztAppBg" format="color" />
+    <attr name="lemeztCardBg" format="color" />
+    <attr name="lemeztSurfaceBg" format="color" />
+    <attr name="lemeztChipBg" format="color" />
+    <attr name="lemeztTextPrimary" format="color" />
+    <attr name="lemeztTextSecondary" format="color" />
+    <attr name="lemeztBorderColor" format="color" />
+    <attr name="lemeztProgressBg" format="color" />
+</resources>

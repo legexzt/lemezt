@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">lemezt</string>
+    <string name="lemezt_tagline">Instant Floating Media Saver</string>
+    <string name="fetching_video_info">Fetching video details...</string>
+    <string name="choose_format">Select Download Quality</string>
+    <string name="download">Download</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save to Downloads</string>
+    <string name="rename_title">Download Complete! Customize File</string>
+    <string name="rename_hint">Enter file name</string>
+    <string name="change_thumbnail">Choose Custom Thumbnail</string>
+    <string name="downloading">Downloading…</string>
+    <string name="muxing">Merging high quality audio &amp; video…</string>
+    <string name="download_successful">Saved to Downloads folder!</string>
+    <string name="include_captions">Include Closed Captions (.srt)</string>
+    <string name="save_thumbnail">Save High-Res Thumbnail</string>
+    <string name="channel_name">Channel</string>
+    <string name="duration">Duration</string>
+    <string name="paste_link_hint">Paste YouTube or Short link here</string>
+    <string name="start_download">Start</string>
+    <string name="hide_in_background">Hide &amp; Download in Background</string>
+    <string name="downloading_in_background">Downloading in background… Check status bar</string>
+</resources>

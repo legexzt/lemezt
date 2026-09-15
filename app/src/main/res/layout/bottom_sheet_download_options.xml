@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="?attr/lemeztCardBg"
+    android:paddingStart="20dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="24dp">
+
+    <!-- Drag Handle -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_bottom_sheet"
+        android:backgroundTint="?attr/lemeztBorderColor" />
+
+    <!-- Video Info Header Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/ivSheetThumb"
+            android:layout_width="80dp"
+            android:layout_height="56dp"
+            android:scaleType="centerCrop"
+            android:background="?attr/lemeztSurfaceBg"
+            android:src="@drawable/ic_lemezt_logo" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvSheetTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="2"
+                android:text="Video Title"
+                android:textColor="?attr/lemeztTextPrimary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvSheetAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Author • 3:45"
+                android:textColor="?attr/lemeztTextSecondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnSheetClose"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_close"
+            app:tint="?attr/lemeztTextSecondary" />
+    </LinearLayout>
+
+    <!-- Tabs: Video vs Audio -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutFormat"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="?attr/lemeztSurfaceBg"
+        app:tabIndicatorColor="@color/lemezt_primary"
+        app:tabSelectedTextColor="@color/lemezt_primary"
+        app:tabTextColor="?attr/lemeztTextSecondary">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Video" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Audio" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <!-- Dynamic Options RadioGroup -->
+    <RadioGroup
+        android:id="@+id/rgFormatOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Metadata Switches -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp">
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbEmbedCover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Embed high-resolution cover art"
+            android:textColor="?attr/lemeztTextPrimary"
+            android:textSize="13sp" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cbSaveLyrics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Download synchronized lyrics (.lrc)"
+            android:textColor="?attr/lemeztTextPrimary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- Sticky Action Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConfirmDownload"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:backgroundTint="@color/lemezt_primary"
+        android:fontFamily="sans-serif-medium"
+        android:text="Download"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        app:cornerRadius="12dp" />
+
+</LinearLayout>

@@ -1,0 +1,51 @@
+<resources>
+    <!-- Base Application Theme (Light Default) -->
+    <style name="Theme.Lemezt" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/lemezt_primary</item>
+        <item name="colorSecondary">@color/lemezt_secondary</item>
+        <item name="android:windowBackground">?attr/lemeztAppBg</item>
+        <item name="android:statusBarColor">?attr/lemeztAppBg</item>
+        <item name="android:navigationBarColor">?attr/lemeztAppBg</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!-- Semantic Theme Palette Attributes -->
+        <item name="lemeztAppBg">@color/lemezt_light_bg</item>
+        <item name="lemeztCardBg">@color/lemezt_light_card_bg</item>
+        <item name="lemeztSurfaceBg">@color/lemezt_light_surface</item>
+        <item name="lemeztChipBg">@color/lemezt_light_chip_bg</item>
+        <item name="lemeztTextPrimary">@color/lemezt_light_text_primary</item>
+        <item name="lemeztTextSecondary">@color/lemezt_light_text_secondary</item>
+        <item name="lemeztBorderColor">@color/lemezt_light_border</item>
+        <item name="lemeztProgressBg">@color/lemezt_light_progress_bg</item>
+    </style>
+
+    <!-- Translucent Overlay / BottomSheet Activity Theme -->
+    <style name="Theme.Lemezt.TranslucentOverlay" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.65</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <item name="lemeztAppBg">@color/lemezt_light_bg</item>
+        <item name="lemeztCardBg">@color/lemezt_light_card_bg</item>
+        <item name="lemeztSurfaceBg">@color/lemezt_light_surface</item>
+        <item name="lemeztChipBg">@color/lemezt_light_chip_bg</item>
+        <item name="lemeztTextPrimary">@color/lemezt_light_text_primary</item>
+        <item name="lemeztTextSecondary">@color/lemezt_light_text_secondary</item>
+        <item name="lemeztBorderColor">@color/lemezt_light_border</item>
+        <item name="lemeztProgressBg">@color/lemezt_light_progress_bg</item>
+    </style>
+    <!-- Fullscreen Video Player Theme -->
+    <style name="Theme.Lemezt.FullScreenPlayer" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

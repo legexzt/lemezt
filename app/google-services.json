@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "818700377660",
+    "project_id": "legezt-hub-ce42c",
+    "storage_bucket": "legezt-hub-ce42c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818700377660:android:a93ac18faa3b8cbdfe6d39",
+        "android_client_info": {
+          "package_name": "com.legezthub.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818700377660-gr86f97033dq0d7pgn9ofrn7a9v0suln.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.legezthub.com",
+            "certificate_hash": "bdaa4a9a645d69dcab55f6d9eeb896917e69910d"
+          }
+        },
+        {
+          "client_id": "818700377660-5as59nebjftmeut005vp256s30hh7liq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpFtFV0Cw-M_IvlGBQR-l4n6253I4yNeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818700377660-5as59nebjftmeut005vp256s30hh7liq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818700377660:android:66d7ac01f00e4ccbfe6d39",
+        "android_client_info": {
+          "package_name": "com.lemezt.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818700377660-5as59nebjftmeut005vp256s30hh7liq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpFtFV0Cw-M_IvlGBQR-l4n6253I4yNeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818700377660-5as59nebjftmeut005vp256s30hh7liq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,31 @@
+<resources>
+    <!-- Brand Semantic Tokens (Master Prompt Specification) -->
+    <color name="lemezt_primary">#7165F5</color>
+    <color name="lemezt_primary_variant">#5A4CD8</color>
+    <color name="lemezt_secondary">#18C7C3</color>
+    <color name="lemezt_accent">#F06565</color>
+    <color name="lemezt_green">#38C98B</color>
+    <color name="lemezt_warning">#F4B740</color>
+    <color name="overlay_scrim">#B3000000</color>
+
+    <!-- Dark Theme (Professional Calm Surfaces) -->
+    <color name="lemezt_dark_bg">#0B0D12</color>
+    <color name="lemezt_card_bg">#141821</color>
+    <color name="lemezt_surface">#1B2130</color>
+    <color name="lemezt_chip_bg">#1B2130</color>
+    <color name="lemezt_chip_selected">#7165F5</color>
+    <color name="lemezt_text_primary">#F4F6FA</color>
+    <color name="lemezt_text_secondary">#A3AABA</color>
+    <color name="lemezt_border">#252B38</color>
+    <color name="lemezt_progress_bg">#252B38</color>
+
+    <!-- Light Theme (Clean Crisp Surfaces) -->
+    <color name="lemezt_light_bg">#F6F7F9</color>
+    <color name="lemezt_light_card_bg">#FFFFFF</color>
+    <color name="lemezt_light_surface">#F0F2F6</color>
+    <color name="lemezt_light_chip_bg">#F0F2F6</color>
+    <color name="lemezt_light_text_primary">#151820</color>
+    <color name="lemezt_light_text_secondary">#676E7C</color>
+    <color name="lemezt_light_border">#E2E8F0</color>
+    <color name="lemezt_light_progress_bg">#E2E8F0</color>
+</resources>
